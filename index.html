@@ -10,6 +10,12 @@
 </head>
 <body>
 
+  <!-- INTRO ANIMATION OVERLAY -->
+  <div id="intro-screen">
+    <h1 class="intro-logo">SHINZU <span>Z</span></h1>
+    <div class="intro-loader"></div>
+  </div>
+
   <!-- TOP HEADER -->
   <header class="app-header">
     <div class="logo">SHINZU <span>Z</span></div>
@@ -31,7 +37,7 @@
       <div class="section-title">Device Information</div>
       <div class="grid-2">
         <div class="card info-card">
-          <span class="label">Device Brand</span>
+          <span class="label">Device Model</span>
           <span class="value" id="dev-brand">Detecting...</span>
         </div>
         <div class="card info-card">
@@ -69,10 +75,18 @@
           <small>FPS</small>
         </div>
         <p>Real-time frame rate test.</p>
-        <button class="btn btn-outline" id="btn-toggle-fps">Start/Stop Test</button>
+        <button class="btn btn-outline" id="btn-toggle-fps">Start Test</button>
       </div>
 
-      <div class="section-title">Optimization Profiles (Recommendations)</div>
+      <div class="section-title">Hardware & Render Info</div>
+      <div class="card info-list">
+        <div class="list-item"><span>Render API (GPU)</span> <strong id="mon-gpu" style="font-size:0.8rem; text-align:right; max-width:60%;">Detecting...</strong></div>
+        <div class="list-item"><span>Battery Level</span> <strong id="mon-battery">--</strong></div>
+        <div class="list-item"><span>Charging Status</span> <strong id="mon-charging">--</strong></div>
+        <div class="list-item"><span>Network Downlink</span> <strong id="mon-downlink">--</strong></div>
+      </div>
+
+      <div class="section-title">Optimization Profiles</div>
       <div class="card">
         <div class="slider-group">
           <label>Target FPS <span id="val-fps">60</span></label>
@@ -82,17 +96,7 @@
           <label>Touch Sensitivity <span id="val-touch">Medium</span></label>
           <input type="range" id="slider-touch" min="1" max="3" step="1" value="2">
         </div>
-        <p class="disclaimer">Note: These are recommended settings for your game. A web app cannot directly control hardware.</p>
-      </div>
-
-      <div class="section-title">System Monitors</div>
-      <div class="card info-list">
-        <div class="list-item"><span>Battery Level</span> <strong id="mon-battery">--</strong></div>
-        <div class="list-item"><span>Charging Status</span> <strong id="mon-charging">--</strong></div>
-        <div class="list-item"><span>Network Downlink</span> <strong id="mon-downlink">--</strong></div>
-        <div class="list-item"><span>Network Latency</span> <strong id="mon-ping">--</strong></div>
-        <div class="list-item"><span>Device Temperature</span> <strong>Unsupported</strong></div>
-        <div class="list-item"><span>Background Apps</span> <strong>Unsupported</strong></div>
+        <p class="disclaimer">Note: These are recommended settings. A web app cannot directly alter hardware limits.</p>
       </div>
     </section>
 
@@ -100,7 +104,6 @@
     <section id="tab-game" class="tab-pane">
       <div class="section-title">Game Library</div>
       <input type="text" id="search-game" class="search-bar" placeholder="Search MOBA games...">
-      
       <div class="game-grid" id="game-list">
         <!-- Games injected here via JS -->
       </div>
@@ -111,15 +114,13 @@
       <div class="section-title">App Settings</div>
       <div class="card info-list">
         <div class="list-item">
-          <span>Appearance</span>
-          <select id="setting-theme">
-            <option value="dark">Dark (Default)</option>
-            <option value="midnight">Midnight Black</option>
+          <span>Animation Scale</span>
+          <select id="setting-anim-scale">
+            <option value="1">Normal (1.0x)</option>
+            <option value="1.5">Slow (1.5x)</option>
+            <option value="0.5">Fast (0.5x)</option>
+            <option value="0">Disabled (0x)</option>
           </select>
-        </div>
-        <div class="list-item">
-          <span>Animations</span>
-          <input type="checkbox" id="setting-anim" checked>
         </div>
         <div class="list-item">
           <span>Game Library Mode</span>
@@ -133,9 +134,9 @@
       <div class="section-title">About & Privacy</div>
       <div class="card">
         <p><strong>App Name:</strong> SHINZU PERFORMANCE Z</p>
-        <p><strong>Version:</strong> 1.0.0</p>
+        <p><strong>Version:</strong> 2.0.0</p>
         <p><strong>Developer:</strong> SHINZU</p>
-        <p class="disclaimer" style="margin-top:10px;">Disclaimer: This app is a visual performance dashboard and recommendation tool. It does not modify system-level CPU, GPU, or RAM allocations.</p>
+        <p class="disclaimer" style="margin-top:10px;">Disclaimer: This app is a visual performance dashboard. It does not modify system-level CPU or RAM allocations.</p>
         <button class="btn btn-danger" id="btn-reset">Reset Settings</button>
       </div>
     </section>
@@ -152,7 +153,7 @@
         <div><span>Profile</span> <strong id="modal-profile">Balanced</strong></div>
       </div>
       <div id="modal-compat" class="compat-box">Checking compatibility...</div>
-      <button class="btn btn-primary" id="btn-modal-optimize">OPTIMIZE GAME</button>
+      <button class="btn btn-primary" id="btn-launch-game">LAUNCH GAME</button>
       <button class="btn btn-outline" id="btn-modal-close">Close</button>
     </div>
   </div>
@@ -160,23 +161,19 @@
   <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-target="tab-home">
-      <span class="icon">🏠</span>
-      <span class="label">Home</span>
+      <span class="icon">🏠</span><span class="label">Home</span>
     </button>
     <button class="nav-btn" data-target="tab-performance">
-      <span class="icon">⚡</span>
-      <span class="label">Performance</span>
+      <span class="icon">⚡</span><span class="label">Performance</span>
     </button>
     <button class="nav-btn" data-target="tab-game">
-      <span class="icon">🎮</span>
-      <span class="label">Game</span>
+      <span class="icon">🎮</span><span class="label">Game</span>
     </button>
     <button class="nav-btn" data-target="tab-setting">
-      <span class="icon">⚙️</span>
-      <span class="label">Setting</span>
+      <span class="icon">⚙️</span><span class="label">Setting</span>
     </button>
   </nav>
 
   <script src="app.js"></script>
 </body>
-  </html>
+          </html>
